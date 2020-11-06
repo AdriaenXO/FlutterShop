@@ -5,6 +5,21 @@ class CartItem {
   Product product;
   int quantity;
   CartItem(this.product, this.quantity);
+  Map toJson() => {
+        'id': product.id,
+        'title': product.title,
+        'quantity': quantity,
+        'price': product.price,
+      };
+  CartItem.fromJson(Map<String, dynamic> json)
+      : product = Product(
+          id: json['id'],
+          price: json['price'],
+          title: json['title'],
+          imageUrl: '',
+          description: '',
+        ),
+        quantity = json['quantity'];
 }
 
 class Cart with ChangeNotifier {
