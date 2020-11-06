@@ -21,25 +21,35 @@ class ProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () =>
-            Provider.of<Products>(context, listen: false).fetchProducts(),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Consumer<Products>(
-            builder: (ctx, products, child) => ListView.builder(
-              itemCount: products.items.length,
-              itemBuilder: (context, index) => Column(
-                children: [
-                  ProductListItem(
-                    products.items[index],
+      body: FutureBuilder(
+        future:
+            Provider.of<Products>(context, listen: false).fetchProducts(true),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () =>
+                        Provider.of<Products>(context, listen: false)
+                            .fetchProducts(true),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Consumer<Products>(
+                        builder: (ctx, products, child) => ListView.builder(
+                          itemCount: products.items.length,
+                          itemBuilder: (context, index) => Column(
+                            children: [
+                              ProductListItem(
+                                products.items[index],
+                              ),
+                              Divider(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  Divider(),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
